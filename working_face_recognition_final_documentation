@@ -1,0 +1,46 @@
+Resources:
+1) Installing OpenCV4 on RPi:	
+	https://www.pyimagesearch.com/2018/09/26/install-opencv-4-on-your-raspberry-pi/
+2) Actual face recognitioin code:
+	https://www.pyimagesearch.com/2018/09/24/opencv-face-recognition/
+3) Troubleshooting when "VIDEOIO ERROR: V4L: can't open camera by index 0" error occurs:
+	https://stackoverflow.com/questions/51645531/error-displaying-video-stream-using-opencv-on-raspberry-pi
+
+
+
+
+##### OpenCV installation requirements:
+1) Cooling system on RPi.
+2) Free empty space on RPi.
+3) Raspbian Stretch installed.
+4) User ready to pause the installation using "CTRL + X" and bringing the installation back using "fg" command.
+5) Keep checking the core temperature of the CPU using the "/opt/vc/bin/vcgencmd measure_temp" command.
+
+
+##### Compile OpenCV using the guide given above with pausing it in middle and resuming the installation process to cool down the RPi.
+
+##### When compiling the OpenCV using the "make -j4" command, if the installation is stuck for a very long time at 99% or 100% don't stop the compiling, instead pause it using "CTRL + X" and then put command as "make -j1" and wait for it to finish compiling.
+
+
+##### In order to get into the python mode for OpenCV you have to first declare the source as the profile file using the command "source ~/.profile". Then you can use the "workon cv" command.
+
+
+##### Running the face recognition whole project:
+	If you want you can put pics of an individual inside the dataset folder with the name of the person as the folder name.
+
+1) source ~/.profile
+2) workon cv
+3) cd Desktop/working_new/working_face_recognition/ 
+      (In short just navigate to the folder containing the project.)
+4) python extract_embeddings.py --dataset dataset --embeddings output/embeddings.pickle --detector face_detection_model --embedding-model openface_nn4.small2.v1.t7
+	(Now the project should start processing the images.)
+5) python train_model.py --embeddings output/embeddings.pickle --recognizer output/recognizer.pickle --le output/le.pickle
+6) sudo modprobe bcm2835-v4l2
+7) After this you can START FACE RECOGNITION IN PICS OR LIVE STREAM VIDEOS USING THE FOLLOWING COMMANDS.
+
+ %%%% For face recognition %%%
+	python recognize.py --detector face_detection_model \ --embedding-model openface_nn4.small2.v1.t7 \ --recognizer output/recognizer.pickle \ --le output/le.pickle \ --image images/adrian.jpg
+
+
+ %%%% For video recognition %%%  
+	python recognize_video.py --detector face_detection_model --embedding-model openface_nn4.small2.v1.t7 --recognizer output/recognizer.pickle --le output/le.pickle
